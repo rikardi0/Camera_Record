@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Camera Record</string>
+    <string name="title">Camera Record</string>
+    <string name="placeholder_date">Sab, 10 de oct.</string>
+    <string name="content_description">image coming from db sqlite</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_info">Informacion</string>
+    <string name="fecha">Fecha</string>
+    <string name="description_big_image">Imagen grande de db</string>
+    <string name="placeholder_image_name">IMG-20221019-WA0000.jpg</string>
+    <string name="info_title">nombre del archivo:</string>
+    <string name="placeholder_image_size">29,91kB</string>
+    <string name="title_size">peso del archivo:</string>
+    <string name="placeholder_image_resolution">540x960px</string>
+    <string name="title_resolution">resolucion del archivo:</string>
+    <string name="placeholder_image_date">18 de Octubre de 2022</string>
+    <string name="date_title">fecha de captura:</string>
+    <string name="title_add">Add</string>
+</resources>
