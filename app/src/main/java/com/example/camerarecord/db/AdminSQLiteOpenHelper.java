@@ -17,6 +17,7 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
     Context context;
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "CameraRecord.db";
+    private static AdminSQLiteOpenHelper instance;
 
 
     private static final String SQL_CREATE_ENTRIES =
@@ -51,7 +52,7 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ReaderContract.FeedEntry.COLUMN_PATH, image);
         id = db.insert(ReaderContract.FeedEntry.TABLE_NAME, null, values);
-        return id;
+              return id;
     }
 
     public void readData(List<ImageInfo> info) {
@@ -79,11 +80,19 @@ public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
                     cursor.getColumnIndexOrThrow(ReaderContract.FeedEntry.COLUMN_PATH));
             String imageDate = cursor.getString(
                     cursor.getColumnIndexOrThrow(ReaderContract.FeedEntry.COLUMN_DATE));
-            info.add(new ImageInfo(String.valueOf(imageId), imageDate, imagePath));
+
+                info.add(new ImageInfo(String.valueOf(imageId), imageDate, imagePath));
 
         }
         cursor.close();
+    }
 
+    public void deleteData( String imgId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = ReaderContract.FeedEntry._ID + " LIKE ?";
+        String[] selectionArgs = { imgId };
+        db.delete(ReaderContract.FeedEntry.TABLE_NAME, selection, selectionArgs);
 
     }
+
 }

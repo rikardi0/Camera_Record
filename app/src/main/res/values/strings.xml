@@ -15,6 +15,6 @@
     <string name="placeholder_image_resolution">540x960px</string>
     <string name="title_resolution">resolucion del archivo:</string>
     <string name="placeholder_image_date">18 de Octubre de 2022</string>
-    <string name="date_title">fecha de captura:</string>
+    <string name="date_title">fecha de ingreso:</string>
     <string name="title_add">Add</string>
 </resources>

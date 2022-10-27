@@ -12,7 +12,7 @@ import java.io.ByteArrayInputStream;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AllScreenImage extends AppCompatActivity {
-    TextView fecha, size;
+    TextView date, size, resolution;
     ImageView imageView;
 
     @Override
@@ -20,19 +20,19 @@ public class AllScreenImage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_screen_image);
         Intent intentImage = getIntent();
+       getSupportActionBar().hide();
         Bundle bundle = intentImage.getExtras();
         ByteArrayInputStream imageStream = new ByteArrayInputStream(bundle.getByteArray("image"));
         Bitmap imageBit = BitmapFactory.decodeStream(imageStream);
-        fecha = findViewById(R.id.image_date);
+        date = findViewById(R.id.image_date);
         size = findViewById(R.id.image_size);
+        resolution = findViewById(R.id.image_resolution);
         imageView = findViewById(R.id.image_detail);
         imageView.setImageBitmap(imageBit);
-        fecha.setText(bundle.getString("fecha"));
+
+        date.setText(bundle.getString("fecha"));
         size.setText(bundle.get("size").toString() + "kB");
-
-
+        resolution.setText(bundle.get("height").toString() + "x" + bundle.get("width") + " pixel");
     }
-
-
 }
 
