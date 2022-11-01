@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.davidecirillo.multichoicerecyclerview.MultiChoiceAdapter;
 import com.example.camerarecord.adapter.ImageAdapter;
 import com.example.camerarecord.db.AdminSQLiteOpenHelper;
 import com.example.camerarecord.model.ImageInfo;
@@ -52,6 +53,39 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new Spacer(0, 20));
+        adapter.setSingleClickMode(false);
+        adapter.setMultiChoiceSelectionListener(new MultiChoiceAdapter.Listener() {
+            @Override
+            public void OnItemSelected(int selectedPosition, int itemSelectedCount, int allItemCount) {
+                infoList.get(selectedPosition - 1).setSelected(true);
+                changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
+            }
+
+            @Override
+            public void OnItemDeselected(int deselectedPosition, int itemSelectedCount, int allItemCount) {
+                infoList.get(deselectedPosition - 1).setSelected(false);
+                changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
+                if (itemSelectedCount == 0) {
+                    changeMenu(false, "Camera Record              ", 0xFF7B221E);
+                }
+                if ( itemSelectedCount == allItemCount){
+                    changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
+                }
+
+            }
+
+            @Override
+            public void OnSelectAll(int itemSelectedCount, int allItemCount) {
+
+
+            }
+
+            @Override
+            public void OnDeselectAll(int itemSelectedCount, int allItemCount) {
+
+            }
+        });
+
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -91,12 +125,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             Toast.makeText(this, "Imagen(s) eliminada(s)", Toast.LENGTH_SHORT).show();
-            SelectImage.setIsSelected(false);
             infoList.clear();
             Db.readData(infoList);
             adapter.notifyDataSetChanged();
-            SelectImage.setFirstTerm(true);
-            SelectImage.setCount(0);
+            adapter.deselectAll();
+            SelectImage.setIsSelected(false);
             getSupportActionBar().setTitle("Camera Record");
             getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFA13E37));
             invalidateMenu();
@@ -157,5 +190,12 @@ public class MainActivity extends AppCompatActivity {
                 Exception error = result.getError();
             }
         }
+    }
+
+    private void changeMenu(boolean value, String title, int color) {
+        SelectImage.setIsSelected(value);
+        invalidateMenu();
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(color));
     }
 }
