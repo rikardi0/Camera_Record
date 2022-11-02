@@ -29,17 +29,11 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
     AdminSQLiteOpenHelper Db;
     private Context context;
 
-
     public ImageAdapter(List<ImageInfo> itemList, Context context) {
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         this.list = itemList;
 
-    }
-
-    @Override
-    public void setMultiChoiceSelectionListener(Listener listener) {
-        super.setMultiChoiceSelectionListener(listener);
     }
 
     @Override
@@ -62,39 +56,21 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
         i.putExtra("height", heightImg);
         i.putExtra("width", widthImg);
 
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(i);
-
-            }
-        });
+        holder.container.setOnClickListener(v -> context.startActivity(i));
         return super.defaultItemViewClickListener(holder, position);
     }
 
-
     @NonNull
-
     @Override
     public ImageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.image_list_element, null);
         return new ImageAdapter.ViewHolder(view);
-
-    }
-
-    @Override
-    public void setActive(@NonNull View view, boolean state) {
-        super.setActive(view, state);
-
-
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageAdapter.ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         holder.binData(list.get(position));
-
     }
 
     @Override
@@ -110,11 +86,9 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             image = itemView.findViewById(R.id.image_list);
             date = itemView.findViewById(R.id.date_image);
             container = itemView.findViewById(R.id.container_image);
-
         }
 
         void binData(final ImageInfo item) {
@@ -126,12 +100,7 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
             String dateText = item.getDate().substring(0, 10);
             date.setText(dateText);
         }
-
-
     }
-
-
-
 }
 
 

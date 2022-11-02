@@ -18,7 +18,7 @@ import com.example.camerarecord.adapter.ImageAdapter;
 import com.example.camerarecord.db.AdminSQLiteOpenHelper;
 import com.example.camerarecord.model.ImageInfo;
 import com.example.camerarecord.model.SelectImage;
-import com.example.camerarecord.utils.Spacer;
+import com.example.camerarecord.ui.Spacer;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -43,16 +43,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        recyclerView = findViewById(R.id.recycler_image_list);
+
         infoList = new ArrayList<>();
         Db = new AdminSQLiteOpenHelper(this);
-        Db.readData(infoList);
-
         adapter = new ImageAdapter(infoList, this);
 
-        recyclerView = findViewById(R.id.recycler_image_list);
+        Db.readData(infoList);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new Spacer(0, 20));
+        recyclerView.setAdapter(adapter);
+        adapterProperties();
+
+
+    }
+
+    private void adapterProperties() {
         adapter.setSingleClickMode(false);
         adapter.setMultiChoiceSelectionListener(new MultiChoiceAdapter.Listener() {
             @Override
@@ -68,16 +75,13 @@ public class MainActivity extends AppCompatActivity {
                 if (itemSelectedCount == 0) {
                     changeMenu(false, "Camera Record              ", 0xFF7B221E);
                 }
-                if ( itemSelectedCount == allItemCount){
+                if (itemSelectedCount == allItemCount) {
                     changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
                 }
-
             }
 
             @Override
             public void OnSelectAll(int itemSelectedCount, int allItemCount) {
-
-
             }
 
             @Override
@@ -85,16 +89,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-
         if (SelectImage.isIsSelected()) {
-
             getMenuInflater().inflate(R.menu.menu_eliminate, menu);
         } else {
-
             getMenuInflater().inflate(R.menu.menu_acciones, menu);
         }
 
@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         long id = item.getItemId();
         if (id == R.id.add_button) {
-
             boolean pick = true;
             if (pick) {
                 if (!checkCameraPermission()) {
@@ -124,21 +123,25 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-            Toast.makeText(this, "Imagen(s) eliminada(s)", Toast.LENGTH_SHORT).show();
-            infoList.clear();
-            Db.readData(infoList);
-            adapter.notifyDataSetChanged();
-            adapter.deselectAll();
-            SelectImage.setIsSelected(false);
-            getSupportActionBar().setTitle("Camera Record");
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFA13E37));
-            invalidateMenu();
+            updateOnDelete();
 
         }
         return true;
     }
 
+    private void updateOnDelete() {
+        Toast.makeText(this, "Imagen(s) eliminada(s)", Toast.LENGTH_SHORT).show();
+        infoList.clear();
+        Db.readData(infoList);
+        adapter.notifyDataSetChanged();
+        adapter.deselectAll();
+        SelectImage.setIsSelected(false);
+        getSupportActionBar().setTitle("Camera Record");
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFA13E37));
+        invalidateMenu();
+    }
 
+    // Crop image method
     private void PickImage() {
         CropImage.activity().setAspectRatio(1, 1).start(this);
     }
@@ -154,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkStoragePermission() {
-        boolean res2 = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        return res2;
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private boolean checkCameraPermission() {
@@ -188,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }

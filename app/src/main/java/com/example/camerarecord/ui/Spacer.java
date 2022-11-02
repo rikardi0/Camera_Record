@@ -1,4 +1,4 @@
-package com.example.camerarecord.utils;
+package com.example.camerarecord.ui;
 
 import android.graphics.Rect;
 import android.view.View;

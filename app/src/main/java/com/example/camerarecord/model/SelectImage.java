@@ -7,7 +7,6 @@ public class SelectImage {
     public static boolean isIsSelected() {
         return isSelected;
     }
-
     public static void setIsSelected(boolean isSelected) {
         SelectImage.isSelected = isSelected;
     }
