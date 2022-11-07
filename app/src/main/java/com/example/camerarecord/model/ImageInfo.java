@@ -4,15 +4,25 @@ package com.example.camerarecord.model;
 public class ImageInfo {
     private String id;
     private String date;
+    private String storage;
     private byte[] image;
     private boolean isSelected;
 
 
-    public ImageInfo(String id, String date, byte[] image) {
+    public ImageInfo(String id, String date, byte[] image, String storage) {
         this.id = id;
         this.image = image;
         this.date = date;
+        this.storage = storage;
 
+    }
+
+    public String getStorage() {
+        return storage;
+    }
+
+    public void setStorage(String storage) {
+        this.storage = storage;
     }
 
     public boolean isSelected() {

@@ -40,6 +40,7 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
     protected View.OnClickListener defaultItemViewClickListener(ViewHolder holder, int position) {
         Intent i = new Intent(context, AllScreenImage.class);
         String date = list.get(position).getDate();
+        String pathStorage = list.get(position).getStorage();
         byte[] image = list.get(position).getImage();
 
         ByteArrayInputStream imageStream = new ByteArrayInputStream(image);
@@ -53,6 +54,7 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
         i.putExtra("fecha", date);
         i.putExtra("image", image);
         i.putExtra("size", imageSize);
+        i.putExtra("storage", pathStorage);
         i.putExtra("height", heightImg);
         i.putExtra("width", widthImg);
 

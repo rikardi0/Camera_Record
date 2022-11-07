@@ -17,4 +17,6 @@
     <string name="placeholder_image_date">18 de Octubre de 2022</string>
     <string name="date_title">fecha de ingreso:</string>
     <string name="title_add">Add</string>
+    <string name="storage_path">Info del Archivo:</string>
+    <string name="storage_placeholder">47457565764.jpg</string>
 </resources>

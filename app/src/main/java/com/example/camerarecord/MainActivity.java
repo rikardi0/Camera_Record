@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,6 +20,9 @@ import com.example.camerarecord.db.AdminSQLiteOpenHelper;
 import com.example.camerarecord.model.ImageInfo;
 import com.example.camerarecord.model.SelectImage;
 import com.example.camerarecord.ui.Spacer;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -37,6 +41,24 @@ public class MainActivity extends AppCompatActivity {
     List<ImageInfo> infoList;
     AdminSQLiteOpenHelper Db;
     ImageAdapter adapter;
+    FirebaseStorage storage;
+    StorageReference storageRef;
+    Uri resultUri;
+
+    @Override
+    public void onBackPressed() {
+        if (adapter.getSelectedItemCount() > 0) {
+            SelectImage.setIsSelected(false);
+            invalidateMenu();
+            adapter.deselectAll();
+            getSupportActionBar().setTitle("Camera Record");
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(0xFFA13E37));
+
+        } else {
+            super.onBackPressed();
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -46,8 +68,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recycler_image_list);
 
         infoList = new ArrayList<>();
+//DB SQLite initialization
         Db = new AdminSQLiteOpenHelper(this);
         adapter = new ImageAdapter(infoList, this);
+//Firebase instance
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
 
         Db.readData(infoList);
 
@@ -55,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new Spacer(0, 20));
         recyclerView.setAdapter(adapter);
         adapterProperties();
-
 
     }
 
@@ -75,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
                 if (itemSelectedCount == 0) {
                     changeMenu(false, "Camera Record              ", 0xFF7B221E);
                 }
-                if (itemSelectedCount == allItemCount) {
-                    changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
-                }
             }
 
             @Override
@@ -86,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void OnDeselectAll(int itemSelectedCount, int allItemCount) {
-
             }
         });
     }
@@ -97,10 +118,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getMenuInflater().inflate(R.menu.menu_acciones, menu);
         }
-
         return true;
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -120,12 +139,14 @@ public class MainActivity extends AppCompatActivity {
             for (ImageInfo strTemp : infoList) {
                 if (strTemp.isSelected()) {
                     Db.deleteData(strTemp.getId());
+                    StorageReference desertRef = storageRef.child(strTemp.getStorage());
+                    desertRef.delete();
 
                 }
             }
             updateOnDelete();
-
         }
+
         return true;
     }
 
@@ -172,17 +193,23 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                Uri resultUri = result.getUri();
+                resultUri = result.getUri();
+
                 try {
                     ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
                     InputStream stream = getContentResolver().openInputStream(resultUri);
                     Bitmap bitmap = BitmapFactory.decodeStream(stream);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArray);
-
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArray);
                     byte[] img = byteArray.toByteArray();
-                    Db.insertData(img);
+                    String storageFile = resultUri.getPath().substring(51);
+                    Db.insertData(img, storageFile);
                     infoList.clear();
                     Db.readData(infoList);
+                    // Firebase Upload
+                    StorageReference imageRef = storageRef.child(storageFile);
+                    UploadTask uploadTask = imageRef.putBytes(img);
+                    uploadTask.addOnFailureListener(e -> Log.d("messi", "error"));
+
                     adapter.notifyDataSetChanged();
                     Toast.makeText(this, "Imagen Agregada", Toast.LENGTH_LONG).show();
                 } catch (Exception ex) {
