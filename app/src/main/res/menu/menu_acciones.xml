@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
 
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/add_button"
         android:icon="@drawable/ic_baseline_add_to_photos_24"
         android:title="@string/title_add"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/update"
+        android:icon="@drawable/ic_baseline_cloud_download_24"
+        android:title="@string/update"
+        app:showAsAction="ifRoom" />
 </menu>

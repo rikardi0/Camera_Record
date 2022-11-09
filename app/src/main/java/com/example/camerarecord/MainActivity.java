@@ -139,12 +139,34 @@ public class MainActivity extends AppCompatActivity {
             for (ImageInfo strTemp : infoList) {
                 if (strTemp.isSelected()) {
                     Db.deleteData(strTemp.getId());
-                    StorageReference desertRef = storageRef.child(strTemp.getStorage());
+                    StorageReference desertRef = storageRef.child("images/" + strTemp.getStorage());
                     desertRef.delete();
 
                 }
             }
             updateOnDelete();
+        } else if (id == R.id.update) {
+            StorageReference allImages = storageRef.child("images");
+            allImages.listAll().addOnSuccessListener(listResult -> {
+                List<String> filesName = new ArrayList<>();
+                List<String> filesList = new ArrayList<>();
+                for (StorageReference item1 : listResult.getItems()) {
+                    filesName.add(item1.getName());
+                    for (ImageInfo info : infoList) {
+                        filesList.add(info.getStorage());
+                        filesName.removeAll(filesList);
+                    }
+                }
+                for (String downloadFile : filesName) {
+                    StorageReference imagePath = storageRef.child("images/" + downloadFile);
+                    imagePath.getBytes(716800).addOnSuccessListener(bytes -> {
+                        Db.insertData(bytes, downloadFile);
+                        infoList.clear();
+                        Db.readData(infoList);
+                        adapter.notifyDataSetChanged();
+                    });
+                }
+            });
         }
 
         return true;
@@ -206,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                     infoList.clear();
                     Db.readData(infoList);
                     // Firebase Upload
-                    StorageReference imageRef = storageRef.child(storageFile);
+                    StorageReference imageRef = storageRef.child("images/" + storageFile);
                     UploadTask uploadTask = imageRef.putBytes(img);
                     uploadTask.addOnFailureListener(e -> Log.d("messi", "error"));
 
