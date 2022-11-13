@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="350dp"
             android:layout_marginBottom="25dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/description_big_image"
             android:scaleType="fitXY"
             tools:srcCompat="@tools:sample/avatars" />
@@ -27,39 +28,90 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:gravity="top"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
 
-            <TextView
-                android:layout_width="141dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/storage_path"
-                android:textSize="18sp">
-
-            </TextView>
-
-
-            <TextView
-                android:id="@+id/storage_path"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="sans-serif-light"
-                android:text="@string/storage_placeholder"
-                android:textColor="?attr/colorSecondaryVariant">
 
-            </TextView>
+                >
+
+                <TextView
+                    android:layout_width="141dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/storage_path"
+                    android:textSize="18sp">
+
+                </TextView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/storage_path"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="sans-serif-light"
+                        android:text="@string/storage_placeholder"
+                        android:textColor="?attr/colorSecondaryVariant">
+
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/image_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="sans-serif-light"
+                        android:paddingTop="5dp"
+                        android:text="@string/placeholder_image_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/image_resolution"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:fontFamily="sans-serif-light"
+                        android:paddingTop="5dp"
+                        android:text="@string/placeholder_image_resolution">
+
+                    </TextView>
+                </LinearLayout>
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
 
             <TextView
                 android:layout_width="141dp"
@@ -84,65 +136,9 @@
                 android:textColor="?attr/colorSecondaryVariant">
 
             </TextView>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|end"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="141dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/title_size"
-                android:textSize="18sp">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/image_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="sans-serif-light"
-                android:text="@string/placeholder_image_size">
-
-            </TextView>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|end"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="141dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/title_resolution"
-                android:textSize="18sp">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/image_resolution"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
-                android:fontFamily="sans-serif-light"
-                android:text="@string/placeholder_image_resolution">
-
-            </TextView>
-        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.camerarecord;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -39,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<ImageInfo> infoList;
+    ProgressDialog progressBar;
     AdminSQLiteOpenHelper Db;
     ImageAdapter adapter;
     FirebaseStorage storage;
@@ -59,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("messi", "muu");
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -81,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new Spacer(0, 20));
         recyclerView.setAdapter(adapter);
         adapterProperties();
-
     }
 
     private void adapterProperties() {
@@ -139,13 +145,17 @@ public class MainActivity extends AppCompatActivity {
             for (ImageInfo strTemp : infoList) {
                 if (strTemp.isSelected()) {
                     Db.deleteData(strTemp.getId());
-                    StorageReference desertRef = storageRef.child("images/" + strTemp.getStorage());
-                    desertRef.delete();
 
                 }
             }
             updateOnDelete();
         } else if (id == R.id.update) {
+            progressBar = new ProgressDialog(this);
+            progressBar.setCancelable(false);
+            progressBar.setMessage("Sincronizando...");
+            progressBar.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressBar.show();
+
             StorageReference allImages = storageRef.child("images");
             allImages.listAll().addOnSuccessListener(listResult -> {
                 List<String> filesName = new ArrayList<>();
@@ -161,22 +171,38 @@ public class MainActivity extends AppCompatActivity {
                     StorageReference imagePath = storageRef.child("images/" + downloadFile);
                     imagePath.getBytes(716800).addOnSuccessListener(bytes -> {
                         Db.insertData(bytes, downloadFile);
-                        infoList.clear();
-                        Db.readData(infoList);
-                        adapter.notifyDataSetChanged();
+                        updateAdapter(infoList);
+
+
                     });
                 }
+
+                deleteDialog();
             });
         }
 
         return true;
     }
 
+    private void deleteDialog() {
+        try {
+            Thread.sleep(500);
+            progressBar.dismiss();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void updateAdapter(List<ImageInfo> info) {
+        infoList.clear();
+        Db.readData(info);
+        adapter.notifyDataSetChanged();
+    }
+
     private void updateOnDelete() {
         Toast.makeText(this, "Imagen(s) eliminada(s)", Toast.LENGTH_SHORT).show();
-        infoList.clear();
-        Db.readData(infoList);
-        adapter.notifyDataSetChanged();
+        updateAdapter(infoList);
         adapter.deselectAll();
         SelectImage.setIsSelected(false);
         getSupportActionBar().setTitle("Camera Record");
@@ -225,14 +251,13 @@ public class MainActivity extends AppCompatActivity {
                     byte[] img = byteArray.toByteArray();
                     String storageFile = resultUri.getPath().substring(51);
                     Db.insertData(img, storageFile);
-                    infoList.clear();
-                    Db.readData(infoList);
+                    updateAdapter(infoList);
                     // Firebase Upload
                     StorageReference imageRef = storageRef.child("images/" + storageFile);
                     UploadTask uploadTask = imageRef.putBytes(img);
+
                     uploadTask.addOnFailureListener(e -> Log.d("messi", "error"));
 
-                    adapter.notifyDataSetChanged();
                     Toast.makeText(this, "Imagen Agregada", Toast.LENGTH_LONG).show();
                 } catch (Exception ex) {
                     Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();

@@ -50,6 +50,7 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
         int widthImg = imageBit.getWidth();
         double imageBytes = image.length;
         double imageSize = Math.round(imageBytes / 1024 * 100.0) / 100.0;
+        String id = list.get(position).getId();
 
         i.putExtra("fecha", date);
         i.putExtra("image", image);
@@ -57,6 +58,7 @@ public class ImageAdapter extends MultiChoiceAdapter<ImageAdapter.ViewHolder> {
         i.putExtra("storage", pathStorage);
         i.putExtra("height", heightImg);
         i.putExtra("width", widthImg);
+        i.putExtra("id", id);
 
         holder.container.setOnClickListener(v -> context.startActivity(i));
         return super.defaultItemViewClickListener(holder, position);
