@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void OnItemSelected(int selectedPosition, int itemSelectedCount, int allItemCount) {
                 infoList.get(selectedPosition - 1).setSelected(true);
-                changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
+                changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFFE7E7E7);
             }
 
             @Override
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 infoList.get(deselectedPosition - 1).setSelected(false);
                 changeMenu(true, "Eliminar " + itemSelectedCount + " imagen(s)", 0xFF7E7776);
                 if (itemSelectedCount == 0) {
-                    changeMenu(false, "Camera Record              ", 0xFF7B221E);
+                    changeMenu(false, "Camera Record              ", 0xFFA13E37);
                 }
             }
 

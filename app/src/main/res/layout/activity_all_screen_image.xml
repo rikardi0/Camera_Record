@@ -18,7 +18,7 @@
         <ImageView
             android:id="@+id/image_detail"
             android:layout_width="match_parent"
-            android:layout_height="350dp"
+            android:layout_height="390dp"
             android:layout_marginBottom="25dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/description_big_image"

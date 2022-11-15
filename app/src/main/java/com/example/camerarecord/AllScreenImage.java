@@ -1,7 +1,5 @@
 package com.example.camerarecord;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -38,48 +36,36 @@ public class AllScreenImage extends AppCompatActivity {
         Db = new AdminSQLiteOpenHelper(this);
         Intent intentImage = getIntent();
         Bundle bundle = intentImage.getExtras();
-        ByteArrayInputStream imageStream = new ByteArrayInputStream(bundle.getByteArray("image"));
+
+        byte[] imageBundle = bundle.getByteArray("image");
+        String dateBundle = bundle.getString("fecha");
+        String storageBundle = bundle.getString("storage");
+        String sizeBundle = bundle.get("size").toString();
+        String heightBundle = bundle.get("height").toString();
+        String widthBundle = bundle.get("width").toString();
+
+        ByteArrayInputStream imageStream = new ByteArrayInputStream(imageBundle);
         Bitmap imageBit = BitmapFactory.decodeStream(imageStream);
 
         getSupportActionBar().hide();
 
         imageView.setImageBitmap(imageBit);
-        date.setText(bundle.getString("fecha"));
-        storage.setText(bundle.getString("storage"));
+        date.setText(dateBundle);
+        storage.setText(storageBundle);
 
-        size.setText(bundle.get("size").toString().concat("kb"));
-        resolution.setText(bundle.get("height").toString().concat("x ").concat(String.valueOf(bundle.get("width"))).concat(" pixel"));
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        size.setText(sizeBundle.concat("kb"));
+        resolution.setText(heightBundle.concat("x ").concat(widthBundle).concat(" pixel"));
 
         storageDb = FirebaseStorage.getInstance();
         storageRef = storageDb.getReference();
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+        Intent intentDetail = new Intent(this, DetailForImage.class);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
+                intentDetail.putExtra("image", imageBundle);
+                startActivity(intentDetail);
 
-                alertDialog.setMessage("Desea eliminar la imagen de la nube?");
-                alertDialog.setTitle("Atencion!");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Si",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                StorageReference eliminatePath = storageRef.child("images/" + bundle.getString("storage"));
-                                eliminatePath.delete();
-                                Db.deleteData(bundle.getString("id"));
-
-
-                            }
-                        });
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
-                alertDialog.show();
-
-                alertDialog.show();
-                return false;
             }
         });
 
